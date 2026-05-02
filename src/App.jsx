@@ -25,13 +25,13 @@ const Sidebar = () => {
           className={`project-item ${currentView === 'dashboard' ? 'active' : ''}`}
           onClick={() => setCurrentView('dashboard')}
         >
-          📊 Dashboard
+          <span className="sidebar-icon">📊</span> Dashboard
         </div>
         <div 
           className={`project-item ${currentView === 'team' ? 'active' : ''}`}
           onClick={() => setCurrentView('team')}
         >
-          👥 Manage Team
+          <span className="sidebar-icon">👥</span> Manage Team
         </div>
       </div>
 
@@ -61,7 +61,9 @@ const Sidebar = () => {
               setCurrentView('projects');
             }}
           >
-            <div className="project-dot" style={{ background: project.color }}></div>
+            <div className="sidebar-icon">
+              <div className="project-dot" style={{ background: project.color }}></div>
+            </div>
             {project.name}
           </div>
         ))}
