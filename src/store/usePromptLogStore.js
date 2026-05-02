@@ -49,19 +49,37 @@ export const usePromptLogStore = create((set, get) => ({
         activeProjectId: projects?.[0]?.id || null,
         activeCategoryId: projects?.[0]?.categories?.[0]?.id || null
       });
+
+      // 3. Fetch Team Members for active project
+      if (projects?.[0]?.id) {
+        get().fetchTeamMembers(projects[0].id);
+      }
     } catch (err) {
       console.error('Error fetching data:', err);
     }
   },
 
+  fetchTeamMembers: async (projectId) => {
+    const { data, error } = await supabase
+      .from('team_members')
+      .select('*')
+      .eq('project_id', projectId);
+    
+    if (!error) {
+      set({ teamMembers: data || [] });
+    }
+  },
+
   // --- NAVIGATION ---
-  setActiveProject: (id) => set((state) => {
-    const project = state.projects.find(p => p.id === id);
-    return { 
+  setActiveProject: (id) => {
+    const { projects } = get();
+    const project = projects.find(p => p.id === id);
+    set({ 
       activeProjectId: id, 
       activeCategoryId: project?.categories?.[0]?.id || null 
-    };
-  }),
+    });
+    get().fetchTeamMembers(id);
+  },
   
   setActiveCategory: (id) => set({ activeCategoryId: id }),
   setCurrentView: (view) => set({ currentView: view }),
@@ -176,17 +194,31 @@ export const usePromptLogStore = create((set, get) => ({
   },
 
   // --- TEAM ACTIONS ---
-  addTeamMember: (name, email, role) => set((state) => ({
-    teamMembers: [...state.teamMembers, { 
-      id: uid('tm'), 
-      name, 
-      email, 
-      role, 
-      avatar: name.split(' ').map(n => n[0]).join('').toUpperCase() 
-    }]
-  })),
+  addTeamMember: async (email, role) => {
+    const { activeProjectId } = get();
+    if (!activeProjectId) return;
 
-  removeTeamMember: (id) => set((state) => ({
-    teamMembers: state.teamMembers.filter(tm => tm.id !== id)
-  }))
+    const { data, error } = await supabase
+      .from('team_members')
+      .insert([{ project_id: activeProjectId, email, role }])
+      .select();
+
+    if (!error && data) {
+      set((state) => ({
+        teamMembers: [...state.teamMembers, data[0]]
+      }));
+      get().addNotification('👥', 'Member Invited', `${email} has been added to the project.`);
+    } else if (error) {
+      get().addNotification('⚠️', 'Invite Failed', error.message);
+    }
+  },
+
+  removeTeamMember: async (id) => {
+    const { error } = await supabase.from('team_members').delete().eq('id', id);
+    if (!error) {
+      set((state) => ({
+        teamMembers: state.teamMembers.filter(tm => tm.id !== id)
+      }));
+    }
+  }
 }));
