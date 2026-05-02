@@ -38,14 +38,14 @@
   --font-heading: 'Manrope', sans-serif;
   --font-body: 'Hind', sans-serif;
 
-  /* SPACING SYSTEM (8px base) */
+  /* SPACING SYSTEM (4px base) */
   --space-xs: 0.25rem;  /* 4px */
   --space-sm: 0.5rem;   /* 8px */
-  --space-md: 1rem;     /* 16px */
-  --space-lg: 1.5rem;   /* 24px */
-  --space-xl: 2rem;     /* 32px */
-  --space-2xl: 3rem;    /* 48px */
-  --space-3xl: 4rem;    /* 64px */
+  --space-md: 0.75rem;  /* 12px */
+  --space-lg: 1rem;     /* 16px */
+  --space-xl: 1.25rem;  /* 20px */
+  --space-2xl: 1.5rem;  /* 24px */
+  --space-3xl: 2rem;    /* 32px */
 }
 
 * {
@@ -285,8 +285,8 @@ code, pre, .mono {
 .topbar {
   display: flex;
   align-items: center;
-  gap: var(--space-md);
-  padding: var(--space-md) var(--space-xl);
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-xl);
   border-bottom: 1px solid var(--border);
   background: var(--bg-primary);
   position: sticky;
@@ -313,16 +313,16 @@ code, pre, .mono {
 }
 
 .page-container {
-  padding: var(--space-2xl) var(--space-3xl);
+  padding: var(--space-xl) var(--space-2xl);
   width: 100%;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2xl);
+  gap: var(--space-xl);
 }
 
 .page-header {
-  margin-bottom: var(--space-xl);
+  margin-bottom: var(--space-md);
 }
 
 .page-title {
@@ -387,7 +387,7 @@ code, pre, .mono {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: var(--space-xl);
+  padding: var(--space-lg);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
