@@ -65,19 +65,45 @@ The application will move from a `persist` middleware to a real-time subscriptio
 
 ---
 
-## 3. Implementation Checklist
+---
 
-### Phase 1: Infrastructure
-- [ ] Initialize Supabase project.
-- [ ] Create `prompt-assets` storage bucket (Public).
-- [ ] Execute SQL schema migrations.
+## 4. Pending Requirements (From User)
 
-### Phase 2: Core Migration
-- [ ] Install `@supabase/supabase-js`.
-- [ ] Configure `src/lib/supabase.js` client.
-- [ ] Create data migration script (Local Storage -> Supabase).
+To begin implementation, the following credentials and configurations are required:
 
-### Phase 3: Feature Parity
-- [ ] Implement Row Level Security (RLS) for team access.
-- [ ] Replace `usePromptLogStore` methods with Supabase RPCs/Queries.
-- [ ] Finalize file upload workflow.
+- [ ] **Supabase URL**: The project URL from your Supabase Settings -> API.
+- [ ] **Supabase Anon Key**: The public API key from Supabase Settings -> API.
+- [ ] **Service Role Key**: (Optional) Only needed if we are setting up administrative scripts.
+- [ ] **Storage Bucket Name**: Confirmation of the name for the assets bucket (default: `prompt-assets`).
+- [ ] **Auth Configuration**: Confirmation of which auth providers you want (e.g., Email/Password, Google).
+
+---
+
+## 5. Setup & Implementation Checklist
+
+### Step 1: Environment Setup
+- [ ] Create `.env` file in project root.
+- [ ] Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
+- [ ] Install dependencies: `npm install @supabase/supabase-js`.
+
+### Step 2: Database Initialization
+- [ ] Run `projects` table migration.
+- [ ] Run `categories` table migration.
+- [ ] Run `trials` table migration.
+- [ ] Run `attachments` table migration.
+- [ ] Enable Row Level Security (RLS) on all tables.
+
+### Step 3: Storage Configuration
+- [ ] Create `prompt-assets` bucket in Supabase Storage.
+- [ ] Set bucket privacy to "Public" (or configure signed URL logic).
+- [ ] Add RLS policy to allow authenticated users to upload/delete files.
+
+### Step 4: Frontend Integration
+- [ ] Initialize Supabase client in `src/lib/supabase.js`.
+- [ ] Replace `localStorage` logic in `usePromptLogStore.js` with Supabase queries.
+- [ ] Implement data migration function to push existing local data to the cloud.
+- [ ] Update `TrialCard` to handle persistent cloud URLs for attachments.
+
+### Step 5: Collaboration Features
+- [ ] Implement team invite logic.
+- [ ] Verify RLS policies correctly filter data based on user identity.
