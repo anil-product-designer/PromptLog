@@ -5,30 +5,31 @@ import { usePromptLogStore } from '../store/usePromptLogStore';
 const supabase = createClient();
 
 const Login = () => {
+  const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { addNotification } = usePromptLogStore();
 
-  const handleLogin = async (e) => {
+  const handleAuth = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL);
-    console.log('Supabase Key Defined:', !!import.meta.env.VITE_SUPABASE_ANON_KEY);
+    const { error } = isSignUp 
+      ? await supabase.auth.signUp({ email, password })
+      : await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
       setError(error.message);
-      addNotification('⚠️', 'Login Failed', error.message);
+      addNotification('⚠️', 'Auth Error', error.message);
     } else {
-      addNotification('🔑', 'Welcome back', 'You have successfully signed in.');
+      if (isSignUp) {
+        addNotification('📧', 'Account Created', 'Please check your email or dashboard to confirm.');
+      } else {
+        addNotification('🔑', 'Welcome back', 'You have successfully signed in.');
+      }
     }
     setLoading(false);
   };
@@ -38,11 +39,11 @@ const Login = () => {
       <div className="login-card">
         <div className="login-header">
           <div className="logo-icon" style={{ margin: '0 auto 1rem' }}>PL</div>
-          <h1>Team Access</h1>
+          <h1>{isSignUp ? 'Create Account' : 'Team Access'}</h1>
           <p>PromptLog Intelligence Hub</p>
         </div>
 
-        <form onSubmit={handleLogin} className="login-form">
+        <form onSubmit={handleAuth} className="login-form">
           <div className="form-group">
             <label>Team Email</label>
             <input 
@@ -67,12 +68,19 @@ const Login = () => {
           {error && <div className="login-error">{error}</div>}
 
           <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
-            {loading ? 'Authenticating...' : 'Sign In to Hub'}
+            {loading ? 'Processing...' : (isSignUp ? 'Create Team Account' : 'Sign In to Hub')}
           </button>
         </form>
 
         <div className="login-footer">
-          Internal Team Only • Secure Repository
+          <button 
+            className="btn btn-ghost btn-sm" 
+            onClick={() => setIsSignUp(!isSignUp)}
+            style={{ color: 'var(--purple-light)', marginBottom: '1rem' }}
+          >
+            {isSignUp ? 'Already have an account? Sign In' : 'Need an account? Sign Up'}
+          </button>
+          <div>Internal Team Only • Secure Repository</div>
         </div>
       </div>
     </div>
