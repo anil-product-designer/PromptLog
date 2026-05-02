@@ -1,22 +1,42 @@
-# TRACE (Design Decision Log)
+# PromptLog: Intelligence Hub 🧠
 
-Document the rationale behind every design move.
-
-**TRACE** is a standalone React application built to help product designers and engineers systematically track, organize, and present their design decisions. Stop relying on scattered Slack messages or massive Figma files. Establish a clean, chronological timeline of your design iterations with integrated "before & after" visual comparisons.
+PromptLog is a high-fidelity, research-grade repository for capturing, documenting, and scaling AI prompt engineering knowledge. Designed for professional teams, it focuses on the iterative "Refinement Log" workflow.
 
 ## 🚀 Key Features
 
-- **Workspace Management**: Initialize dedicated workspaces for different clients or products.
-- **Decision Timelines**: Log the specific rationale, advantages, and tradeoffs for every UX/UI change.
-- **Visual Validation**: Built-in support for "Before & After" image uploads, including direct clipboard pasting.
-- **Presentation Mode**: Launch a distraction-free, keyboard-navigable slideshow of your decisions, perfect for client reviews.
-- **Integrated Design System**: Includes a fully functional, self-documenting internal design system built right into the app routing.
-- **Supabase Ready**: Includes immediate "Demo Mode" fallback caching to `localStorage`, with optional seamless integration into a private Supabase instance.
+- **Intelligence Hub**: A high-level analytics dashboard to track "Total Iterations" and "Active Domains."
+- **Refinement Logs**: A rigorous diagnostic workflow for documenting instruction directives, diagnosis of issues, and strategic pivots.
+- **Team Management**: Secure collaborator management with invite-link generation.
+- **4px Design System**: A mathematically harmonious UI based on a 4px grid and a 1.2 Major Second typographic scale using Manrope and Hind.
+- **Rich Attachments**: Support for image and document uploads to preserve the "Reason-Why" behind prompt changes.
 
-## 💻 Tech Stack
+## 🛠️ Tech Stack
 
-- **Frontend Framework**: React 19 + Vite
-- **Styling**: Pure CSS + CSS Variables (Strict 4px/8px grid system)
-- **State Management**: Zustand
-- **Icons**: Lucide React
-- **Backend / DB**: Supabase (PostgreSQL)
+- **Framework**: React (Vite)
+- **State Management**: Zustand (with Persistence)
+- **Styling**: Vanilla CSS (Custom Variable Design System)
+- **Icons**: Emoji-based (Standardized)
+
+## 📦 Getting Started
+
+1. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
+
+2. **Run Development Server**:
+   ```bash
+   npm run dev
+   ```
+
+3. **Build for Production**:
+   ```bash
+   npm run build
+   ```
+
+## 🧠 Methodology
+
+PromptLog is built on the principle of **Institutional Intelligence**. Every change to a prompt is treated as a "Strategic Pivot" derived from a "Diagnosis." This ensures that as your team grows, your AI knowledge remains a structured asset rather than a fragmented history of chat logs.
+
+---
+Built by Anil K.
