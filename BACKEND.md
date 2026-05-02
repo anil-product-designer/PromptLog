@@ -78,7 +78,7 @@ To begin implementation, the following credentials and configurations are requir
 - [ ] **Auth Configuration**: Confirmation of which auth providers you want (e.g., Email/Password, Google).
 
 ---
-
+Backend password is (Promptlog@123)
 ## 5. Setup & Implementation Checklist
 
 ### Step 1: Environment Setup
