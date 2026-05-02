@@ -121,7 +121,7 @@ const NotificationCenter = () => {
 };
 
 const App = () => {
-  const { addNotification, currentView, setUser, fetchData, user } = usePromptLogStore();
+  const { addNotification, currentView, setCurrentView, setUser, fetchData, user } = usePromptLogStore();
 
   useEffect(() => {
     // 1. Initial Session Check
@@ -132,8 +132,11 @@ const App = () => {
 
     // 2. Auth Listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+      const newUser = session?.user ?? null;
+      setUser(newUser);
+      
       if (session) {
+        setCurrentView('dashboard'); // Force redirect to dashboard on login
         fetchData();
         addNotification('🔓', 'Authenticated', 'Connected to Supabase cloud.');
       }
