@@ -37,6 +37,15 @@
 
   --font-heading: 'Manrope', sans-serif;
   --font-body: 'Hind', sans-serif;
+
+  /* SPACING SYSTEM (8px base) */
+  --space-xs: 0.25rem;  /* 4px */
+  --space-sm: 0.5rem;   /* 8px */
+  --space-md: 1rem;     /* 16px */
+  --space-lg: 1.5rem;   /* 24px */
+  --space-xl: 2rem;     /* 32px */
+  --space-2xl: 3rem;    /* 48px */
+  --space-3xl: 4rem;    /* 64px */
 }
 
 * {
@@ -276,8 +285,8 @@ code, pre, .mono {
 .topbar {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem 2rem;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-xl);
   border-bottom: 1px solid var(--border);
   background: var(--bg-primary);
   position: sticky;
@@ -304,13 +313,16 @@ code, pre, .mono {
 }
 
 .page-container {
-  padding: 3rem 4rem;
+  padding: var(--space-2xl) var(--space-3xl);
   width: 100%;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xl);
 }
 
 .page-header {
-  margin-bottom: 3.5rem;
+  margin-bottom: var(--space-xl);
 }
 
 .page-title {
@@ -375,8 +387,8 @@ code, pre, .mono {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 1.5rem;
-  transition: border-color 0.2s ease;
+  padding: var(--space-xl);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .card:hover {
@@ -765,9 +777,63 @@ code, pre, .mono {
 .hidden { display: none; }
 .flex { display: flex; }
 .items-center { align-items: center; }
-.justify-between { justify-content: space-between; }
-.gap-2 { gap: 0.5rem; }
-.mt-4 { margin-top: 1rem; }
+/* PROJECT COMPONENTS */
+.trial-card {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: relative;
+}
+
+.trial-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.trial-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.trial-metadata {
+  margin-top: 0.5rem;
+  border-top: 1px solid var(--border);
+  padding-top: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  opacity: 0.5;
+  font-size: var(--text-xs);
+}
+
+.attachment-chip {
+  padding: 0.35rem 0.6rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.2s;
+}
+
+.attachment-chip:hover {
+  background: var(--bg-hover);
+  border-color: var(--purple-light);
+  color: var(--text-primary);
+}
+
+.diagnosis-block {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
 
 .mono { font-family: 'JetBrains Mono', monospace; }
 

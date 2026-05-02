@@ -23,7 +23,7 @@ const Dashboard = () => {
         </div>
       </header>
 
-      <div className="grid grid-3" style={{ marginBottom: '3rem' }}>
+      <div className="grid grid-3" style={{ marginBottom: 'var(--space-3xl)' }}>
         <div className="card stat-card">
           <div className="stat-value">{totalPrompts}</div>
           <div className="stat-label">Total Iterations</div>
@@ -38,7 +38,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="grid grid-2" style={{ gap: '2rem' }}>
+      <div className="grid grid-2" style={{ gap: 'var(--space-2xl)' }}>
         <div className="card" style={{ height: 'fit-content' }}>
           <h3 style={{ marginBottom: '1.5rem', fontSize: '1.1rem' }}>Repository Distribution</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>

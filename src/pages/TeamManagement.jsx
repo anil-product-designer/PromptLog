@@ -21,8 +21,8 @@ const TeamManagement = () => {
   };
 
   return (
-    <div className="page-container">
-      <header className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div className="page-container" style={{ gap: 'var(--space-xl)' }}>
+      <header className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-lg)' }}>
         <div>
           <h1 className="page-title">Team Management</h1>
           <p className="page-subtitle">Manage access levels and invite collaborators to your intelligence hub.</p>

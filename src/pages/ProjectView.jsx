@@ -5,8 +5,8 @@ const TrialCard = ({ trial, onEdit, onDelete }) => {
   const hasAttachments = trial.attachments && trial.attachments.length > 0;
 
   return (
-    <div className="card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', position: 'relative' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+    <div className="card trial-card">
+      <div className="trial-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <div className="badge badge-purple" style={{ fontSize: '0.65rem' }}>{trial.version}</div>
           {hasAttachments && (
@@ -21,9 +21,10 @@ const TrialCard = ({ trial, onEdit, onDelete }) => {
         </div>
       </div>
 
-        <div className="trial-section" style={{ marginBottom: '1.25rem' }}>
+      <div className="trial-body">
+        <div className="trial-section">
           <label className="label" style={{ fontSize: '0.6rem', marginBottom: '0.5rem' }}>Instruction Directive</label>
-          <div className="prompt-block" style={{ background: 'var(--bg-primary)', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border)', fontSize: '0.8rem', whiteSpace: 'pre-wrap', fontFamily: 'monospace' }}>
+          <div className="prompt-block mono" style={{ background: 'var(--bg-primary)', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border)', fontSize: '0.8rem', whiteSpace: 'pre-wrap' }}>
             {trial.prompt}
           </div>
         </div>
@@ -31,31 +32,21 @@ const TrialCard = ({ trial, onEdit, onDelete }) => {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
           <div className="trial-section">
             <label className="label" style={{ fontSize: '0.6rem', color: 'var(--yellow)' }}>Diagnosis</label>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>{trial.finding}</div>
+            <div className="diagnosis-block">{trial.finding}</div>
           </div>
           <div className="trial-section">
             <label className="label" style={{ fontSize: '0.6rem', color: 'var(--green)' }}>Pivot / Refinement</label>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>{trial.improvement}</div>
+            <div className="diagnosis-block">{trial.improvement}</div>
           </div>
         </div>
+      </div>
 
       {hasAttachments && (
         <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           {trial.attachments.map((file, idx) => (
             <div 
               key={idx} 
-              style={{ 
-                padding: '0.35rem 0.6rem', 
-                background: 'rgba(255,255,255,0.03)', 
-                borderRadius: '6px', 
-                border: '1px solid var(--border)', 
-                fontSize: '0.65rem', 
-                color: 'var(--text-muted)',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.4rem'
-              }}
+              className="attachment-chip"
               onClick={() => window.open(file.url, '_blank')}
             >
               {file.type?.startsWith('image/') ? '🖼️' : '📄'} {file.name}
@@ -64,9 +55,9 @@ const TrialCard = ({ trial, onEdit, onDelete }) => {
         </div>
       )}
 
-      <div style={{ marginTop: '0.5rem', borderTop: '1px solid var(--border)', paddingTop: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', opacity: 0.5 }}>
-        <div style={{ fontSize: '0.65rem' }}>Saved by: {trial.author}</div>
-        <div style={{ fontSize: '0.65rem' }}>{trial.date}</div>
+      <div className="trial-metadata">
+        <div>Refined by: {trial.author}</div>
+        <div>{trial.date}</div>
       </div>
     </div>
   );
@@ -186,7 +177,7 @@ const ProjectView = () => {
       </div>
 
       <div className="content">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', gap: '1rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-xl)', gap: 'var(--space-md)' }}>
           <div style={{ position: 'relative', flex: 1 }}>
             <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>🔍</span>
             <input 
@@ -212,7 +203,7 @@ const ProjectView = () => {
           </div>
         </div>
 
-        <div className="tabs" style={{ display: 'flex', gap: '1.5rem', marginBottom: '2rem', borderBottom: '1px solid var(--border)', overflowX: 'auto' }}>
+        <div className="tabs" style={{ display: 'flex', gap: 'var(--space-lg)', marginBottom: 'var(--space-xl)', borderBottom: '1px solid var(--border)', overflowX: 'auto' }}>
           {project.categories.map(cat => (
             <div 
               key={cat.id} 
