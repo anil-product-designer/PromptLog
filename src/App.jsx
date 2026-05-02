@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react';
 import { usePromptLogStore } from './store/usePromptLogStore';
+import { createClient } from './utils/supabase/client';
 import ProjectView from './pages/ProjectView';
 import Dashboard from './pages/Dashboard';
 import TeamManagement from './pages/TeamManagement';
 
+const supabase = createClient();
+
 const Sidebar = () => {
-  const { projects, activeProjectId, setActiveProject, currentView, setCurrentView } = usePromptLogStore();
+  const { projects, activeProjectId, setActiveProject, currentView, setCurrentView, user } = usePromptLogStore();
 
   return (
     <nav className="sidebar">
@@ -71,10 +74,10 @@ const Sidebar = () => {
 
       <div className="sidebar-footer">
         <div className="user-row">
-          <div className="avatar">AP</div>
+          <div className="avatar">{user?.email?.[0].toUpperCase() || 'A'}</div>
           <div>
-            <div className="user-name">Anil Patel</div>
-            <div className="user-role">Product Designer</div>
+            <div className="user-name">{user?.email?.split('@')[0] || 'Guest User'}</div>
+            <div className="user-role">{user ? 'Authorized' : 'Guest'}</div>
           </div>
         </div>
       </div>
@@ -102,10 +105,25 @@ const NotificationCenter = () => {
 };
 
 const App = () => {
-  const { addNotification, currentView } = usePromptLogStore();
+  const { addNotification, currentView, setUser, fetchData } = usePromptLogStore();
 
   useEffect(() => {
-    addNotification('🚀', 'Welcome back', 'PromptLog Lean Repository is ready.');
+    // 1. Initial Session Check
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      if (session) fetchData();
+    });
+
+    // 2. Auth Listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      if (session) {
+        fetchData();
+        addNotification('🔓', 'Authenticated', 'Connected to Supabase cloud.');
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   return (

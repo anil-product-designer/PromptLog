@@ -1,162 +1,192 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { createClient } from '../utils/supabase/client';
 
+const supabase = createClient();
 const uid = (prefix) => `${prefix}-${Math.random().toString(36).slice(2, 10)}`;
 
-export const usePromptLogStore = create(
-  persist(
-    (set, get) => ({
-      activeProjectId: 'proj-voice',
-      activeCategoryId: 'cat-discovery',
-      currentView: 'projects', // 'dashboard' or 'projects'
-      
-      notifications: [],
-      
-      teamMembers: [
-        { id: 'tm-1', name: 'Anil K.', email: 'anil@example.com', role: 'Owner', avatar: 'AK' },
-        { id: 'tm-2', name: 'Sarah J.', email: 'sarah@example.com', role: 'Prompt Specialist', avatar: 'SJ' },
-      ],
-      projects: [
-        {
-          id: 'proj-voice',
-          name: 'Voice Platform',
-          description: 'System prompts for conversational AI and sales knowledge.',
-          icon: '🎙️',
-          color: '#7C3AED',
-          categories: [
-            { id: 'cat-discovery', name: 'Discovery Calls' },
-            { id: 'cat-demo', name: 'Product Demos' },
-            { id: 'cat-closing', name: 'Closing' }
-          ]
-        },
-        {
-          id: 'proj-transify',
-          name: 'Transify',
-          description: 'Translation and localization prompt engineering.',
-          icon: '🌐',
-          color: '#10B981',
-          categories: [
-            { id: 'cat-slang', name: 'Slang/Idioms' },
-            { id: 'cat-technical', name: 'Technical Terms' }
-          ]
-        },
-        {
-          id: 'proj-image',
-          name: 'Image Generation',
-          description: 'Stable Diffusion and Midjourney prompt library.',
-          icon: '🎨',
-          color: '#F59E0B',
-          categories: [
-            { id: 'cat-photorealistic', name: 'Photorealistic' },
-            { id: 'cat-artistic', name: 'Artistic Styles' }
-          ]
-        }
-      ],
+export const usePromptLogStore = create((set, get) => ({
+  activeProjectId: null,
+  activeCategoryId: null,
+  currentView: 'dashboard',
+  user: null,
+  
+  notifications: [],
+  teamMembers: [],
+  projects: [],
+  trials: [],
 
-      trials: [
-        {
-          id: 'trial-1',
-          projectId: 'proj-voice',
-          categoryId: 'cat-discovery',
-          version: 'v1.0',
-          date: 'May 2, 2026',
-          prompt: 'You are a helpful sales assistant. Start by asking about their day.',
-          output: 'Hi! I hope your day is going well. I wanted to chat about...',
-          finding: 'The intro is too generic and doesn\'t build immediate value.',
-          improvement: 'Add specific industry context to the opening sentence.',
-          attachments: [],
-          author: 'Anil K.'
-        },
-        {
-          id: 'trial-2',
-          projectId: 'proj-voice',
-          categoryId: 'cat-discovery',
-          version: 'v1.1',
-          date: 'May 2, 2026',
-          prompt: 'You are a helpful sales assistant. Start by mentioning their recent Series B funding.',
-          output: 'Hi! Congrats on the Series B funding. I noticed your team is scaling...',
-          finding: 'Much better engagement rate, but needs to pivot to ZenTech faster.',
-          improvement: 'Bridge the funding news to AI infrastructure needs within 2 sentences.',
-          attachments: [],
-          author: 'Anil K.'
-        }
-      ],
+  // --- AUTH ACTIONS ---
+  setUser: (user) => set({ user }),
 
-      // Actions
-      setActiveProject: (id) => set((state) => {
-        const project = state.projects.find(p => p.id === id);
-        return { 
-          activeProjectId: id, 
-          activeCategoryId: project?.categories[0]?.id || null 
-        };
-      }),
+  // --- DATA FETCHING ---
+  fetchData: async () => {
+    try {
+      // 1. Fetch Projects
+      const { data: projects, error: pError } = await supabase
+        .from('projects')
+        .select('*, categories(*)');
       
-      setActiveCategory: (id) => set({ activeCategoryId: id }),
-      
-      setCurrentView: (view) => set({ currentView: view }),
-      
-      addNotification: (icon, title, msg) => set((state) => ({
-        notifications: [...state.notifications, { id: uid('notif'), icon, title, msg }]
-      })),
-      
-      removeNotification: (id) => set((state) => ({
-        notifications: state.notifications.filter(n => n.id !== id)
-      })),
+      if (pError) throw pError;
 
-      addProject: (name, description, icon, color) => set((state) => ({
-        projects: [...state.projects, { 
-          id: uid('proj'), 
-          name, 
-          description, 
-          icon, 
-          color, 
-          categories: [{ id: uid('cat'), name: 'General' }] 
-        }]
-      })),
+      // 2. Fetch Trials
+      const { data: trials, error: tError } = await supabase
+        .from('trials')
+        .select('*, attachments(*)');
+      
+      if (tError) throw tError;
 
-      addCategory: (projectId, name) => set((state) => ({
+      // Map snake_case to camelCase
+      const mappedTrials = (trials || []).map(t => ({
+        ...t,
+        projectId: t.project_id,
+        categoryId: t.category_id,
+        author: t.author_name
+      }));
+
+      set({ 
+        projects: projects || [], 
+        trials: mappedTrials,
+        activeProjectId: projects?.[0]?.id || null,
+        activeCategoryId: projects?.[0]?.categories?.[0]?.id || null
+      });
+    } catch (err) {
+      console.error('Error fetching data:', err);
+    }
+  },
+
+  // --- NAVIGATION ---
+  setActiveProject: (id) => set((state) => {
+    const project = state.projects.find(p => p.id === id);
+    return { 
+      activeProjectId: id, 
+      activeCategoryId: project?.categories?.[0]?.id || null 
+    };
+  }),
+  
+  setActiveCategory: (id) => set({ activeCategoryId: id }),
+  setCurrentView: (view) => set({ currentView: view }),
+  
+  // --- NOTIFICATIONS ---
+  addNotification: (icon, title, msg) => set((state) => ({
+    notifications: [...state.notifications, { id: uid('notif'), icon, title, msg }]
+  })),
+  
+  removeNotification: (id) => set((state) => ({
+    notifications: state.notifications.filter(n => n.id !== id)
+  })),
+
+  // --- PROJECT ACTIONS ---
+  addProject: async (name, description, icon, color) => {
+    const { data, error } = await supabase
+      .from('projects')
+      .insert([{ name, description, icon, color, owner_id: get().user?.id }])
+      .select();
+
+    if (!error && data) {
+      const newProject = { ...data[0], categories: [] };
+      set((state) => ({ projects: [...state.projects, newProject] }));
+      
+      // Auto-create initial category
+      await get().addCategory(newProject.id, 'General');
+    }
+  },
+
+  addCategory: async (projectId, name) => {
+    const { data, error } = await supabase
+      .from('categories')
+      .insert([{ project_id: projectId, name }])
+      .select();
+
+    if (!error && data) {
+      set((state) => ({
         projects: state.projects.map(p => p.id === projectId 
-          ? { ...p, categories: [...p.categories, { id: uid('cat'), name }] }
+          ? { ...p, categories: [...(p.categories || []), data[0]] }
           : p
         )
-      })),
+      }));
+    }
+  },
 
-      updateCategory: (projectId, categoryId, newName) => set((state) => ({
+  updateCategory: async (projectId, categoryId, newName) => {
+    const { error } = await supabase
+      .from('categories')
+      .update({ name: newName })
+      .eq('id', categoryId);
+
+    if (!error) {
+      set((state) => ({
         projects: state.projects.map(p => p.id === projectId 
           ? { ...p, categories: p.categories.map(c => c.id === categoryId ? { ...c, name: newName } : c) }
           : p
         )
-      })),
-
-      addTrial: (trial) => set((state) => ({
-        trials: [...state.trials, { ...trial, id: uid('trial'), date: new Date().toLocaleDateString() }]
-      })),
-
-      updateTrial: (id, updates) => set((state) => ({
-        trials: state.trials.map(t => t.id === id ? { ...t, ...updates } : t)
-      })),
-
-      deleteTrial: (id) => set((state) => ({
-        trials: state.trials.filter(t => t.id !== id)
-      })),
-
-      addTeamMember: (name, email, role) => set((state) => ({
-        teamMembers: [...state.teamMembers, { 
-          id: uid('tm'), 
-          name, 
-          email, 
-          role, 
-          avatar: name.split(' ').map(n => n[0]).join('').toUpperCase() 
-        }]
-      })),
-
-      removeTeamMember: (id) => set((state) => ({
-        teamMembers: state.teamMembers.filter(tm => tm.id !== id)
-      }))
-    }),
-    {
-      name: 'promptlog-lean-store',
-      storage: createJSONStorage(() => localStorage),
+      }));
     }
-  )
-);
+  },
+
+  // --- TRIAL ACTIONS ---
+  addTrial: async (trial) => {
+    const { data, error } = await supabase
+      .from('trials')
+      .insert([{ 
+        project_id: trial.projectId,
+        category_id: trial.categoryId,
+        version: trial.version,
+        prompt: trial.prompt,
+        output: trial.output,
+        finding: trial.finding,
+        improvement: trial.improvement,
+        author_name: trial.author,
+        author_id: get().user?.id
+      }])
+      .select();
+
+    if (!error && data) {
+      set((state) => ({
+        trials: [...state.trials, { ...data[0], projectId: data[0].project_id, categoryId: data[0].category_id }]
+      }));
+    }
+  },
+
+  updateTrial: async (id, updates) => {
+    const { error } = await supabase
+      .from('trials')
+      .update({
+        version: updates.version,
+        prompt: updates.prompt,
+        output: updates.output,
+        finding: updates.finding,
+        improvement: updates.improvement
+      })
+      .eq('id', id);
+
+    if (!error) {
+      set((state) => ({
+        trials: state.trials.map(t => t.id === id ? { ...t, ...updates } : t)
+      }));
+    }
+  },
+
+  deleteTrial: async (id) => {
+    const { error } = await supabase.from('trials').delete().eq('id', id);
+    if (!error) {
+      set((state) => ({
+        trials: state.trials.filter(t => t.id !== id)
+      }));
+    }
+  },
+
+  // --- TEAM ACTIONS ---
+  addTeamMember: (name, email, role) => set((state) => ({
+    teamMembers: [...state.teamMembers, { 
+      id: uid('tm'), 
+      name, 
+      email, 
+      role, 
+      avatar: name.split(' ').map(n => n[0]).join('').toUpperCase() 
+    }]
+  })),
+
+  removeTeamMember: (id) => set((state) => ({
+    teamMembers: state.teamMembers.filter(tm => tm.id !== id)
+  }))
+}));
