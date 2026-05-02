@@ -21,6 +21,9 @@ const Login = () => {
       password,
     });
 
+    console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL);
+    console.log('Supabase Key Defined:', !!import.meta.env.VITE_SUPABASE_ANON_KEY);
+
     if (error) {
       setError(error.message);
       addNotification('⚠️', 'Login Failed', error.message);
