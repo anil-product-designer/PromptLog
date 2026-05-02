@@ -295,7 +295,7 @@ code, pre, .mono {
   display: flex;
   align-items: center;
   gap: var(--space-md);
-  padding: var(--space-md) var(--space-xl);
+  padding: 1.5rem var(--space-xl);
   border-bottom: 1px solid var(--border);
   background: var(--bg-primary);
   position: sticky;
