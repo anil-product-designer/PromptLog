@@ -156,12 +156,12 @@ const ProjectView = () => {
   return (
     <div className="page active" style={{ display: 'flex', flexDirection: 'column' }}>
       <div className="topbar">
-        <div>
-          <div className="topbar-title" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <span style={{ fontSize: '1.25rem' }}>{project.icon}</span>
-            {project.name} Refinement Log
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-md)' }}>
+          <span style={{ fontSize: '1.5rem', lineHeight: 1 }}>{project.icon}</span>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div className="topbar-title" style={{ marginBottom: '2px' }}>{project.name} Refinement Log</div>
+            <div className="topbar-breadcrumb">{project.description}</div>
           </div>
-          <div className="topbar-breadcrumb">{project.description}</div>
         </div>
         <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.75rem' }}>
           <button className="btn btn-ghost btn-sm" onClick={() => {
