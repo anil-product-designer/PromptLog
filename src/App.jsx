@@ -4,11 +4,19 @@ import { createClient } from './utils/supabase/client';
 import ProjectView from './pages/ProjectView';
 import Dashboard from './pages/Dashboard';
 import TeamManagement from './pages/TeamManagement';
+import Login from './pages/Login';
 
 const supabase = createClient();
 
 const Sidebar = () => {
-  const { projects, activeProjectId, setActiveProject, currentView, setCurrentView, user } = usePromptLogStore();
+  const { projects, activeProjectId, setActiveProject, currentView, setCurrentView, user, addNotification } = usePromptLogStore();
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (!error) {
+      addNotification('🔒', 'Signed Out', 'You have been securely logged out.');
+    }
+  };
 
   return (
     <nav className="sidebar">
@@ -75,10 +83,18 @@ const Sidebar = () => {
       <div className="sidebar-footer">
         <div className="user-row">
           <div className="avatar">{user?.email?.[0].toUpperCase() || 'A'}</div>
-          <div>
+          <div style={{ flex: 1 }}>
             <div className="user-name">{user?.email?.split('@')[0] || 'Guest User'}</div>
             <div className="user-role">{user ? 'Authorized' : 'Guest'}</div>
           </div>
+          <button 
+            className="btn btn-ghost btn-sm" 
+            title="Sign Out"
+            onClick={handleLogout}
+            style={{ padding: '4px', height: '24px', minWidth: '24px' }}
+          >
+            🚪
+          </button>
         </div>
       </div>
     </nav>
@@ -105,7 +121,7 @@ const NotificationCenter = () => {
 };
 
 const App = () => {
-  const { addNotification, currentView, setUser, fetchData } = usePromptLogStore();
+  const { addNotification, currentView, setUser, fetchData, user } = usePromptLogStore();
 
   useEffect(() => {
     // 1. Initial Session Check
@@ -125,6 +141,13 @@ const App = () => {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  if (!user) return (
+    <div className="app">
+      <NotificationCenter />
+      <Login />
+    </div>
+  );
 
   return (
     <div className="app">
