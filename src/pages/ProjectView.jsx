@@ -8,16 +8,16 @@ const TrialCard = ({ trial, onEdit, onDelete }) => {
     <div className="card trial-card">
       <div className="trial-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <div className="badge badge-purple" style={{ fontSize: '0.65rem' }}>{trial.version}</div>
+          <div className="badge badge-purple">{trial.version}</div>
           {hasAttachments && (
-            <div className="badge badge-ghost" style={{ fontSize: '0.6rem', background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)' }}>
+            <div className="badge badge-ghost">
               📎 {trial.attachments.length} Assets
             </div>
           )}
         </div>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           <button className="btn btn-ghost btn-sm" onClick={() => onEdit(trial)}>Edit</button>
-          <button className="btn btn-ghost btn-sm" style={{ color: 'var(--red)' }} onClick={() => onDelete(trial.id)}>Delete</button>
+          <button className="btn btn-danger btn-sm" onClick={() => onDelete(trial.id)}>Delete</button>
         </div>
       </div>
 
@@ -385,7 +385,7 @@ const ProjectView = () => {
 
               <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
                 <button type="button" className="btn btn-ghost" onClick={() => setShowAddModal(false)}>Cancel</button>
-                <button type="submit" className="btn btn-primary">{editingTrialId ? 'Update Library' : 'Save to Library'}</button>
+                <button type="submit" className="btn btn-primary">{editingTrialId ? 'Update Log' : 'Save Log'}</button>
               </div>
             </form>
           </div>

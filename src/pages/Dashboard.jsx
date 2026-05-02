@@ -72,7 +72,7 @@ const Dashboard = () => {
             {recentTrials.length > 0 ? recentTrials.map(trial => (
               <div key={trial.id} style={{ padding: '1rem', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid var(--border)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem', alignItems: 'center' }}>
-                  <span style={{ fontSize: '0.8rem', color: 'var(--purple-light)', fontWeight: 600, background: 'var(--purple-dim)', padding: '2px 8px', borderRadius: '4px' }}>{trial.version}</span>
+                  <span className="badge badge-purple">{trial.version}</span>
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{trial.date}</span>
                 </div>
                 <div style={{ fontSize: '0.9rem', marginBottom: '0.75rem', color: 'var(--text-primary)', lineHeight: '1.5', fontWeight: '500' }}>

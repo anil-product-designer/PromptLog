@@ -81,8 +81,7 @@ const TeamManagement = () => {
                 <td style={{ padding: '1.25rem', textAlign: 'right' }}>
                   {member.role !== 'Owner' && (
                     <button 
-                      className="btn btn-ghost btn-sm" 
-                      style={{ color: 'var(--red)' }}
+                      className="btn btn-danger btn-sm" 
                       onClick={() => { if(confirm(`Remove ${member.name}?`)) removeTeamMember(member.id); }}
                     >
                       Remove

@@ -38,7 +38,8 @@ const Sidebar = () => {
       <div className="sidebar-section" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <span>Your Projects</span>
         <button 
-          style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '1.2rem' }}
+          className="btn btn-ghost btn-sm"
+          style={{ padding: '0 0.4rem', height: '24px', minWidth: '24px' }}
           onClick={() => {
             const name = prompt('Enter new project name:');
             if (name) {
@@ -68,10 +69,10 @@ const Sidebar = () => {
 
       <div className="sidebar-footer">
         <div className="user-row">
-          <div className="avatar">AK</div>
+          <div className="avatar">AP</div>
           <div>
-            <div className="user-name">Anil K.</div>
-            <div className="user-role">Prompt Engineer</div>
+            <div className="user-name">Anil Patel</div>
+            <div className="user-role">Product Designer</div>
           </div>
         </div>
       </div>
